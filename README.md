@@ -14,6 +14,16 @@ The app is close to being production level but falls short in the following ways
 - the 'statistics' endpoints are not optimized for massive amounts of data (though they work fine with 10,000+ vehicles)
   - this is because the 'statistics' endpoints were designed to be agnostic as to which database is being used in order to prove out OOP concepts, as opposed to being written to use optimizations provided by the given database it is communicating with.
 
+## Back End Tech Stack
+
+- Node
+- TypeScript
+- Express
+- mongodb v3.6 node driver
+- mysql2 node driver 
+- MongoDB
+- MySQL
+
 ## Running Docker Containers
 **Note: you will need `docker` and `docker-compose` installed on your machine.**
 
