@@ -10,6 +10,7 @@ One cool feature of these 'Functional' styled functions are that they are smart 
 Another cool feature of this app is its use of generator functions to create demo data. These generator functions 'step through' the creation and completion of vehicles and stage assignments to simulate as if a user were actually using the application. This results in realistic, 'makes real world sense', data.
 
 The app is close to being production level but falls short in the following ways:
+- The application allows consumers to switch which database the server is communicating with. Obviously this would not work well with multiple consumers using the service at the same time.
 - There are no notions of seperate users or authentication methods
 - the 'statistics' endpoints are not optimized for massive amounts of data (though they work fine with 10,000+ vehicles)
   - this is because the 'statistics' endpoints were designed to be agnostic as to which database is being used in order to prove out OOP concepts, as opposed to being written to use optimizations provided by the given database it is communicating with.
