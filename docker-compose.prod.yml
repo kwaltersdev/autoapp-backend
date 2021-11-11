@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  autoflow-back-end:
+    build:
+      target: production
+    command: node build/index.js

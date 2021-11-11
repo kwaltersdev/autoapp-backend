@@ -1,0 +1,23 @@
+export const demoNotes: string[] = [
+  'Runs good, needs new tires.',
+  'Body is in great shape, needs good cleaning.',
+  'Rocker panels are rusty underneath, otherwise body is clean.',
+  'Been wrecked, check to see if repairs are feasible.',
+  'Breaks are making noise, but has been sitting for several months without being driven',
+  'Vehicle either has a noisy wheelbearing, or very noisy tires',
+  'The right color, but definitely needs buffed to really shine',
+  'Good front row car, very popular make/model right now',
+  'One owner, no accidents, low mileage. Great car, unfortunately low demand for this make/model',
+  'Paint needs touched up, lots of chips',
+  'Tires are iffy, determine whether or not replacing them will increase resell value',
+  'Exhaust leak or engine rattle. Needs further investigation',
+  'Check Engine light is on, but seems to run flawlessy. O2 sensor codes.',
+  'Wheels need sanded and refinished to really make this car appreciated for how nice it is',
+  'Dent in front right fender, needs checked for any additional damage mechanically/structurally',
+  'NO BRAKES!!!',
+  'Potential shutter in the transmission when shifting into 2nd gear while cold. Needs further investigation.',
+  'Headlights need sanded and buffed. May need replaced if not made clear again',
+  'Heavy smoke smell, needs some extra time spend detailing, cabin airfilters replaced, and air freshener bomb used',
+  'LEAKING ENGINE COOLANT!! Be cautious when driving this vehicle, and monitor engine temperature',
+  'Exhaust manifold is leaking, get quote on repair cost before starting smaller repairs, this may be sent to the auction if costs are too high'
+];

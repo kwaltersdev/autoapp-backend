@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  autoflow-back-end:
+    depends_on:
+      - mysql
+      - mongo
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/app/src
+      - ./nodemon.json:/home/node/app/nodemon.json
+    container_name: autoflow-service
+    expose:
+      - '7000'
+      - '7001'
+    ports:
+      - '7000:7000'
+      - '7001:7001'
+      - '9229:9229'
+    environment:
+      - SELECT_PORT=7001
+      - MAIN_PORT=7000
+      - MONGO_URI=mongodb://mongo:27017/AutoFlow
+      - MONGO_DATABASE=AutoFlow
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=AutoFlow
+    command: npm run dev
+  mongo:
+    container_name: mongo
+    image: mongo:4.2.8
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.27
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    cap_add: [ SYS_NICE ]
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=AutoFlow
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysqldb:/var/lib/mysql
+      - mysqldb_config:/etc/mysql
+volumes:
+  mongodb:
+  mongodb_config:
+  mysqldb:
+  mysqldb_config:
