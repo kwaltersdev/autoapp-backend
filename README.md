@@ -52,7 +52,7 @@ or to run containers in the background:
 docker-compose up -d
 ```
 
-Open debugger:
+### Open debugger:
 1. Type 'about:inspect' into the Chrome browser
 2. Select 'Open dedicated DevTools for Node'
 
