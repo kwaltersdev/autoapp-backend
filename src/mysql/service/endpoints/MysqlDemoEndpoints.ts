@@ -1,5 +1,5 @@
 import { DemoEndpoints } from "../../../common/service/endpoints/demo/DemoEndpoints";
-import AutoFlowConnect from "../../AutoFlowConnect";
+import AutoAppConnect from "../../AutoAppConnect";
 import { createStagesTable } from '../../tableAPIs/stages';
 import { createPeoplePlacesTable } from "../../tableAPIs/peoplePlaces";
 import { createStagesPeoplePlacesTable } from '../../tableAPIs/stages-peoplePlaces-join';
@@ -14,7 +14,7 @@ import { createStageAssignmentsTable } from "../../tableAPIs/stageAsignments";
 
 export class MysqlDemoEndpoints extends DemoEndpoints {
   async clearDatabase() {
-    const pool = await new AutoFlowConnect().createPool();
+    const pool = await new AutoAppConnect().createPool();
     try {
       // drop tables
       await Promise.all([

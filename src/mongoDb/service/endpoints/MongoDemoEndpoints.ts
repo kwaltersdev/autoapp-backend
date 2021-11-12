@@ -1,12 +1,12 @@
 import { StageEndpointsInterface } from '../../../common/service/endpoints/StageEndpointsInterface';
 import { VehicleEndpointsInterface } from '../../../common/service/endpoints/VehicleEndpointsInterface';
 import { DemoEndpoints } from '../../../common/service/endpoints/demo/DemoEndpoints';
-import AutoFlowClient from '../../AutoFlowClient';
+import AutoAppClient from '../../AutoAppClient';
 import { DeleteSuccess } from '../../../common/types/Results';
 
 export class MongoDemoEndpoints extends DemoEndpoints {
   async clearDatabase() {
-    const client = new AutoFlowClient();
+    const client = new AutoAppClient();
     try {
       const { db } = await client.connect();
       await db.dropDatabase();

@@ -1,12 +1,12 @@
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { convertMongoPersonPlace } from '../mongoUtilities';
 import { GetSuccess, PostSuccess, PostExists } from '../../common/types/Results';
 import { addStagePersonPlaceMongo } from './stages';
 import { PersonPlaceVehicleCount } from 'common/types/Stage';
 
 // INTERFACE EXPORTS
-export async function getPersonPlaceVehicleCountsMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getPersonPlaceVehicleCountsMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -22,8 +22,8 @@ export async function getPersonPlaceVehicleCountsMongo(connectionParam?: AutoFlo
   }
 };
 
-export async function getAllPeoplePlacesMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getAllPeoplePlacesMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { peoplePlaces } = connection;
@@ -41,8 +41,8 @@ export async function getAllPeoplePlacesMongo(connectionParam?: AutoFlowConnecti
   }
 };
 
-export async function addPersonPlaceMongo(stageId: string, personPlace: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addPersonPlaceMongo(stageId: string, personPlace: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { peoplePlaces } = connection;

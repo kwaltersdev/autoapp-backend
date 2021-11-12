@@ -1,4 +1,4 @@
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { ObjectId } from 'mongodb';
 import { MongoIdName } from '../mongoTypes/mongoMisc';
 import { IdName } from '../../common/types/misc';
@@ -6,8 +6,8 @@ import { PostSuccess, PostExists, GetSuccess } from '../../common/types/Results'
 import { convertMongoMake } from '../mongoUtilities';
 
 // INTERFACE EXPORTS
-export async function getMakesMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getMakesMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { makes } = connection;
@@ -19,8 +19,8 @@ export async function getMakesMongo(connectionParam?: AutoFlowConnection) {
   }
 };
 
-export async function addMakeMongo(makeName: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addMakeMongo(makeName: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { makes } = connection;

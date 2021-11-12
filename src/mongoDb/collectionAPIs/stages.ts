@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { StageSummary, UpdatedStageOrder, StageVehicleCount } from '../../common/types/Stage';
 import { GetSuccess, PostSuccess, PostExists, PatchSuccess, PatchManyResult, FailedResult } from '../../common/types/Results';
 import { handleIdParam, convertMongoStageSummary, convertMongoExportStage } from '../mongoUtilities';
 import { MongoBaseStageDoc, MongoStageDoc } from '../mongoTypes/MongoStage';
 
 // INTERFACE EXPORTS
-export async function getStageVehicleCountsMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getStageVehicleCountsMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -23,8 +23,8 @@ export async function getStageVehicleCountsMongo(connectionParam?: AutoFlowConne
   }
 }
 
-export async function getStagesMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getStagesMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stages } = connection;
@@ -36,7 +36,7 @@ export async function getStagesMongo(connectionParam?: AutoFlowConnection) {
   }
 }
 
-export async function getPeoplePlacesMongo(stageId: string, connectionParam?: AutoFlowConnection) {
+export async function getPeoplePlacesMongo(stageId: string, connectionParam?: AutoAppConnection) {
   const id = handleIdParam(stageId);
   const detailedStage = await getExportStageMongo(id, connectionParam);
   const peoplePlaces = detailedStage.peoplePlaces.sort((a, b) => {
@@ -47,8 +47,8 @@ export async function getPeoplePlacesMongo(stageId: string, connectionParam?: Au
   return new GetSuccess(peoplePlaces);
 }
 
-export async function addStageMongo(stageName: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addStageMongo(stageName: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stages } = connection;
@@ -73,7 +73,7 @@ export async function addStageMongo(stageName: string, connectionParam?: AutoFlo
   }
 };
 
-export async function updateStageOrderMongo(updateStagesArray: UpdatedStageOrder[], connectionParam?: AutoFlowConnection) {
+export async function updateStageOrderMongo(updateStagesArray: UpdatedStageOrder[], connectionParam?: AutoAppConnection) {
   const stageUpdates = updateStagesArray.map(stage => updateStageDocMongo(stage.id, { order: stage.order }, connectionParam));
   const results = await Promise.all(stageUpdates);
   const checkFailed = results.find(result => result.status === 'failed');
@@ -84,8 +84,8 @@ export async function updateStageOrderMongo(updateStagesArray: UpdatedStageOrder
   return new PatchManyResult('success', results, stagestmp.data);
 }
 
-export async function addStagePersonPlaceMongo(stageId: string, personPlaceId: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addStagePersonPlaceMongo(stageId: string, personPlaceId: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stages } = connection;
@@ -109,8 +109,8 @@ export async function addStagePersonPlaceMongo(stageId: string, personPlaceId: s
 };
 
 // HELPERS
-export async function updateStageDocMongo(stageId: string, update: object, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function updateStageDocMongo(stageId: string, update: object, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stages } = connection;
@@ -126,8 +126,8 @@ export async function updateStageDocMongo(stageId: string, update: object, conne
 interface MatchParam {
   $match: object;
 }
-async function getExportStagesMongo(matchParam?: MatchParam, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+async function getExportStagesMongo(matchParam?: MatchParam, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stages } = connection;
@@ -149,7 +149,7 @@ async function getExportStagesMongo(matchParam?: MatchParam, connectionParam?: A
   }
 }
 
-async function getExportStageMongo(stageId: ObjectId, connectionParam?: AutoFlowConnection) {
+async function getExportStageMongo(stageId: ObjectId, connectionParam?: AutoAppConnection) {
   const stagestmp = await getExportStagesMongo({ $match: { _id: stageId } }, connectionParam);
   const stage = stagestmp[0];
   return stage;

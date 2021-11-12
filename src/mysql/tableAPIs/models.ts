@@ -1,4 +1,4 @@
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { convertMysqlIdName, json } from '../MysqlUtilities';
 import { PostExists, GetSuccess, PostSuccess } from '../../common/types/Results';
@@ -6,7 +6,7 @@ import { MysqlIdName } from '../mysqlTypes/MysqlMisc';
 import { IdName } from '../../common/types/misc';
 
 export async function createModelsTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS models (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,7 +21,7 @@ export async function createModelsTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS
 export async function getModelsMysql(makeId: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const searchQuery = 'SELECT id, name FROM models WHERE makeId = ? ORDER BY name';
     const modelsTmp: MysqlIdName[] = json(await pool.execute(searchQuery, [makeId]))[0];
@@ -33,7 +33,7 @@ export async function getModelsMysql(makeId: string, poolParam?: Pool) {
 }
 
 export async function addModelMysql(makeId: string, modelName: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // check if model exists before inserting
     const existsQuery = 'SELECT name FROM models WHERE name = ? AND makeId = ?';

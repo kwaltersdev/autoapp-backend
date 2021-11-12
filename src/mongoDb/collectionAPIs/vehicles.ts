@@ -1,4 +1,4 @@
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { ObjectId } from 'mongodb';
 import { BaseVehicle, GetVehiclesQuery, AddVehicleParam, NextStock, CheckStock, VehicleStatus, VehiclePage } from '../../common/types/Vehicle';
 import { InitialStageParam } from '../../common/types/StageAssignment';
@@ -12,8 +12,8 @@ import { MongoIdName } from 'mongoDb/mongoTypes/mongoMisc';
 import { getStagesMongo } from './stages';
 
 // INTERFACE EXPORTS
-export async function getVehiclesPagedMongo(status: VehicleStatus, sort: ListOrder, perPage: number, page: Page, compare: number, query: GetVehiclesQuery, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getVehiclesPagedMongo(status: VehicleStatus, sort: ListOrder, perPage: number, page: Page, compare: number, query: GetVehiclesQuery, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -99,8 +99,8 @@ export async function getVehiclesPagedMongo(status: VehicleStatus, sort: ListOrd
 };
 
 
-export async function getVehiclesByStatusMongo(statusParams: string[], connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getVehiclesByStatusMongo(statusParams: string[], connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -112,8 +112,8 @@ export async function getVehiclesByStatusMongo(statusParams: string[], connectio
   }
 };
 
-export async function getNextStockMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getNextStockMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -132,8 +132,8 @@ export async function getNextStockMongo(connectionParam?: AutoFlowConnection) {
   }
 };
 
-export async function checkStockMongo(stock: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function checkStockMongo(stock: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -147,9 +147,9 @@ export async function checkStockMongo(stock: string, connectionParam?: AutoFlowC
   }
 };
 
-export async function addVehicleMongo(vehicleParam: AddVehicleParam, initialStageParam: InitialStageParam, connectionParam?: AutoFlowConnection) {
+export async function addVehicleMongo(vehicleParam: AddVehicleParam, initialStageParam: InitialStageParam, connectionParam?: AutoAppConnection) {
   const assignInitialStage =
-    async (initialStageParam: InitialStageParam, vehicleId: string | ObjectId, dateAssigned: number, connectionParam?: AutoFlowConnection) => {
+    async (initialStageParam: InitialStageParam, vehicleId: string | ObjectId, dateAssigned: number, connectionParam?: AutoAppConnection) => {
       const assignStageParam: MongoAssignStageParam = { ...initialStageParam, vehicleId, dateAssigned };
       // dateAssigned is passed as the dateAdded parameter for 'assignStage' here because in the initial stage
       // the stage's 'dateAssigned' and the vehicle's 'dateAdded' are equivalent
@@ -164,8 +164,8 @@ export async function addVehicleMongo(vehicleParam: AddVehicleParam, initialStag
   return new PostSuccess(updatedVehicle.id, updatedVehicle.doc);
 };
 
-export async function findVehicleMongo(field: 'id' | 'stock', value: string | ObjectId, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function findVehicleMongo(field: 'id' | 'stock', value: string | ObjectId, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -204,8 +204,8 @@ export async function findVehicleMongo(field: 'id' | 'stock', value: string | Ob
   }
 };
 
-export async function updateVehicleDocMongo(vehicleId: ObjectId | string, update: MongoVehicleUpdate, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function updateVehicleDocMongo(vehicleId: ObjectId | string, update: MongoVehicleUpdate, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection ? connection : await client.connect();
@@ -236,15 +236,15 @@ export async function updateVehicleDocMongo(vehicleId: ObjectId | string, update
   }
 };
 
-export async function sellVehicleMongo(vehicleId: string, stageAssignmentId: string, dateSold: number, connectionParam?: AutoFlowConnection) {
+export async function sellVehicleMongo(vehicleId: string, stageAssignmentId: string, dateSold: number, connectionParam?: AutoAppConnection) {
   await completeStageAssignmentMongo(stageAssignmentId, dateSold, connectionParam);
   // updateVehicleDoc handles calculating the ForSaleTime, totalSellTime, and reconditionTime properties
   const soldVehicle = await updateVehicleDocMongo(vehicleId, { status: 'sold', dateSold }, connectionParam);
   return soldVehicle;
 };
 
-export async function deleteVehicleDocMongo(vehicleId: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function deleteVehicleDocMongo(vehicleId: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -256,8 +256,8 @@ export async function deleteVehicleDocMongo(vehicleId: string, connectionParam?:
 };
 
 // HELPERS
-export async function writeVehicleDocMongo(vehicleParam: AddVehicleParam, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function writeVehicleDocMongo(vehicleParam: AddVehicleParam, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { vehicles } = connection;
@@ -270,7 +270,7 @@ export async function writeVehicleDocMongo(vehicleParam: AddVehicleParam, connec
   }
 };
 
-async function getQueriesMatch(status: VehicleStatus, query: GetVehiclesQuery, connectionParam?: AutoFlowConnection) {
+async function getQueriesMatch(status: VehicleStatus, query: GetVehiclesQuery, connectionParam?: AutoAppConnection) {
   // unless otherwise stated, in most cases we do not want to see 'For Sale' vehicles
   const stagesTmp = (await getStagesMongo(connectionParam)).data;
   const forSaleId = (stagesTmp.find(stage => stage.name === 'For Sale'))?.id;

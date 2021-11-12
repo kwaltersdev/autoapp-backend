@@ -1,12 +1,12 @@
 import { GetSuccess, PostExists, PostSuccess } from '../../common/types/Results';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { json, convertMysqlIdName } from '../MysqlUtilities';
 import { MysqlIdName } from 'mysql/mysqlTypes/MysqlMisc';
 import { IdName } from 'common/types/misc';
 
 export async function createMakesTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS makes (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,7 +20,7 @@ export async function createMakesTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS 
 export async function getMakesMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const searchQuery = 'SELECT * FROM makes ORDER BY  name';
     const makes: MysqlIdName[] = (json(await pool.execute(searchQuery)))[0];
@@ -32,7 +32,7 @@ export async function getMakesMysql(poolParam?: Pool) {
 }
 
 export async function addMakeMysql(makeName: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // check if make already exists before inserting
     const existsQuery = 'SELECT name FROM makes WHERE name = ?';

@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection } from "mongodb";
 
-export interface AutoFlowConnection {
+export interface AutoAppConnection {
   db: Db,
   vehicles: Collection,
   stageAssignments: Collection,
@@ -10,7 +10,7 @@ export interface AutoFlowConnection {
   models: Collection;
 }
 
-export default class AutoFlowClient {
+export default class AutoAppClient {
   readonly client: MongoClient;
 
   constructor() {
@@ -18,7 +18,7 @@ export default class AutoFlowClient {
     this.client = new MongoClient(URI, { useUnifiedTopology: true });
   }
 
-  async connect(): Promise<AutoFlowConnection> {
+  async connect(): Promise<AutoAppConnection> {
     await this.client.connect();
     const db = this.client.db(process.env.MONGO_DATABASE);
     return {

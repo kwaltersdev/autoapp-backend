@@ -3,13 +3,13 @@ import { Pool } from 'mysql2/promise';
 import { GetSuccess, PostExists, PostSuccess } from '../../common/types/Results';
 import { IdName } from '../../common/types/misc';
 import { MysqlIdName } from '../mysqlTypes/MysqlMisc';
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { convertMysqlIdName, json } from '../MysqlUtilities';
 import { addStagePersonPlaceMysql } from './stages-peoplePlaces-join';
 import { PersonPlaceVehicleCount } from 'common/types/Stage';
 
 export async function createPeoplePlacesTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS peoplePlaces (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -23,7 +23,7 @@ export async function createPeoplePlacesTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS
 export async function getPersonPlaceVehicleCountsMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const peoplePlacesTmp = (await getAllPeoplePlacesMysql(pool)).data;
     const peoplePlacesCounts: PersonPlaceVehicleCount[] = [];
@@ -39,7 +39,7 @@ export async function getPersonPlaceVehicleCountsMysql(poolParam?: Pool) {
 }
 
 export async function getAllPeoplePlacesMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const peoplePlacesQuery = `SELECT * FROM peoplePlaces ORDER BY name`;
     const peoplePlacesTmp: MysqlIdName[] = json(await pool.execute(peoplePlacesQuery))[0];
@@ -51,7 +51,7 @@ export async function getAllPeoplePlacesMysql(poolParam?: Pool) {
 }
 
 export async function addPersonPlaceMysql(stageId: string, personPlace: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // check if personPlace already exists
     const existsQuery = `SELECT name from peoplePlaces WHERE name = ?`;

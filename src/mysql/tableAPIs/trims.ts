@@ -1,4 +1,4 @@
-import AutoFlowConnect from "../AutoFlowConnect";
+import AutoAppConnect from "../AutoAppConnect";
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { convertMysqlIdName, json } from "../MysqlUtilities";
 import { MysqlIdName } from "../mysqlTypes/MysqlMisc";
@@ -7,7 +7,7 @@ import { GetSuccess, PatchSuccess, PostExists } from "../../common/types/Results
 import { ModelDoc } from "../../common/types/Vehicle";
 
 export async function createTrimsTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS trims (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,7 +21,7 @@ export async function createTrimsTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS
 export async function getTrimsMysql(modelId: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const searchQuery = 'SELECT id, name FROM trims WHERE modelId = ? ORDER BY name';
     const trimsTmp: MysqlIdName[] = json(await pool.execute(searchQuery, [parseInt(modelId)]))[0];
@@ -33,7 +33,7 @@ export async function getTrimsMysql(modelId: string, poolParam?: Pool) {
 }
 
 export async function addTrimMysql(modelId: string, trim: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // check if trim exists before inserting
     const existsQuery = 'SELECT name FROM trims WHERE name = ? AND modelId = ?';

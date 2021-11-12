@@ -1,4 +1,4 @@
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { AssignStageParam, CurrentStageSummary } from '../../common/types/StageAssignment';
 import { GetSuccess, PostSuccess, PatchSuccess } from '../../common/types/Results';
 import { MongoBaseStageAssignment, MongoAssignStageParam } from '../mongoTypes/MongoStageAssignment';
@@ -9,7 +9,7 @@ import { updateVehicleDocMongo, findVehicleMongo } from './vehicles';
 import { addStagePersonPlaceMongo } from './stages';
 
 // INTERFACE EXPORTS
-export async function assignStageMongo(assignStageParam: AssignStageParam | MongoAssignStageParam, previousStage?: CurrentStageSummary, initialAssignment = false, dateAddedParam?: number, connectionParam?: AutoFlowConnection) {
+export async function assignStageMongo(assignStageParam: AssignStageParam | MongoAssignStageParam, previousStage?: CurrentStageSummary, initialAssignment = false, dateAddedParam?: number, connectionParam?: AutoAppConnection) {
   const { stage, personPlace, dateAssigned, vehicleId, dateForSale } = assignStageParam;
   let dateAdded: number; // for recondition time calculation
   if (initialAssignment) {
@@ -48,8 +48,8 @@ export async function assignStageMongo(assignStageParam: AssignStageParam | Mong
   return new PostSuccess(stageAssignmentId.toHexString(), updatedVehicle.doc);
 };
 
-export async function findStageAssignmentMongo(stageId: string | ObjectId, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function findStageAssignmentMongo(stageId: string | ObjectId, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stageAssignments } = connection;
@@ -62,7 +62,7 @@ export async function findStageAssignmentMongo(stageId: string | ObjectId, conne
   }
 };
 
-export async function completeStageAssignmentMongo(stageAssignmentId: string, dateCompleted: number, connectionParam?: AutoFlowConnection) {
+export async function completeStageAssignmentMongo(stageAssignmentId: string, dateCompleted: number, connectionParam?: AutoAppConnection) {
   const stageAssignment = await findStageAssignmentMongo(stageAssignmentId, connectionParam);
   const completeTime = dateCompleted - stageAssignment.data.dateAssigned;
   const updateDoc = { status: 'complete', dateCompleted, completeTime };
@@ -72,8 +72,8 @@ export async function completeStageAssignmentMongo(stageAssignmentId: string, da
   return new PatchSuccess(stageAssignmentId, updateDoc, updatedStageAssignment.doc, updatedVehicle?.data);
 };
 
-export async function getAllStageAssignmentsMongo(connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getAllStageAssignmentsMongo(connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stageAssignments } = connection;
@@ -85,8 +85,8 @@ export async function getAllStageAssignmentsMongo(connectionParam?: AutoFlowConn
   }
 }
 
-export async function getStageHistoryMongo(vehicleId: string | ObjectId, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getStageHistoryMongo(vehicleId: string | ObjectId, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stageAssignments } = connection;
@@ -100,8 +100,8 @@ export async function getStageHistoryMongo(vehicleId: string | ObjectId, connect
 };
 
 // HELPERS
-export async function writeStageAssignmentDocMongo(assignStageParam: MongoAssignStageParam, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function writeStageAssignmentDocMongo(assignStageParam: MongoAssignStageParam, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stageAssignments } = connection;
@@ -128,8 +128,8 @@ export async function writeStageAssignmentDocMongo(assignStageParam: MongoAssign
   }
 };
 
-async function updateStageAssignmentMongo(stageAssignmentId: string | ObjectId, update: object, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+async function updateStageAssignmentMongo(stageAssignmentId: string | ObjectId, update: object, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { stageAssignments } = connection;

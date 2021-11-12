@@ -5,7 +5,7 @@ import { createStagesPeoplePlacesTable } from '../tableAPIs/stages-peoplePlaces-
 import { MysqlStageEndpoints } from './endpoints/MysqlStageEndpoints';
 import { MysqlVehicleEndpoints } from './endpoints/MysqlVehicleEndpoints';
 import { MysqlDemoEndpoints } from './endpoints/MysqlDemoEndpoints';
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { createMakesTable } from '../tableAPIs/makes';
 import { createModelsTable } from '../tableAPIs/models';
 import { createTrimsTable } from '../tableAPIs/trims';
@@ -20,7 +20,7 @@ export class MysqlService extends ServiceAbstract {
   demoEndpoints = new MysqlDemoEndpoints(this.vehicleEndpoints, this.stageEndpoints);
 
   async initialize(): Promise<void> {
-    const pool = await new AutoFlowConnect().createPool();
+    const pool = await new AutoAppConnect().createPool();
     try {
       // create tables
       await Promise.all([

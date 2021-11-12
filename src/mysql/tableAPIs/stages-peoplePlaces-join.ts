@@ -1,11 +1,11 @@
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { getExportStageMysql } from './stages';
 import { json } from '../MysqlUtilities';
 import { PatchSuccess } from '../../common/types/Results';
 import { Pool } from 'mysql2/promise';
 
 export async function createStagesPeoplePlacesTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // ID column is a concatination of [stageId][personPlaceId]. Each will be unique
     const query = `CREATE TABLE IF NOT EXISTS stagePeoplePlacesJoin (
@@ -19,7 +19,7 @@ export async function createStagesPeoplePlacesTable(poolParam?: Pool) {
 }
 
 export async function addStagePersonPlaceMysql(stageId: string, personPlaceId: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // make sure stage exists
     const existsQuery = 'SELECT name FROM stages WHERE id = ?';

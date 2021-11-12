@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 
-export default class AutoFlowConnect {
+export default class AutoAppConnect {
   private readonly config = {
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,

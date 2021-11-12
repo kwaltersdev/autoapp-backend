@@ -8,15 +8,15 @@ import { demoNotes } from './demoData/demoNotes';
 import { defaults } from './defaults';
 import { AssignmentProbability, assignmentProbabilities as assignmentProbabilitiesImport } from "./demoData/demoStagesPeoplePlaces";
 import { AddVehicleParam } from "../../../types/Vehicle";
-import AutoFlowClient from "../../../../mongoDb/AutoFlowClient";
+import AutoAppClient from "../../../../mongoDb/AutoAppClient";
 import { DbSelection } from '../../../types/Demo';
-import AutoFlowConnect from "../../../../mysql/AutoFlowConnect";
+import AutoAppConnect from "../../../../mysql/AutoAppConnect";
 import { Pool } from 'mysql2/promise';
 
 export function setDefaults(stages: StageEndpointsInterface, db: DbSelection) {
   return async () => {
-    const mongoClient = new AutoFlowClient();
-    const mysqlConnect = new AutoFlowConnect();
+    const mongoClient = new AutoAppClient();
+    const mysqlConnect = new AutoAppConnect();
     const connection = db === 'mongodb' ? await mongoClient.connect() : await mysqlConnect.createPool();
     try {
       // check if our defaults alrady exist in the db;
@@ -55,8 +55,8 @@ export function setDefaults(stages: StageEndpointsInterface, db: DbSelection) {
 
 export function getDefaults(stages: StageEndpointsInterface, db: DbSelection) {
   return async () => {
-    const mongoClient = new AutoFlowClient();
-    const mysqlConnect = new AutoFlowConnect();
+    const mongoClient = new AutoAppClient();
+    const mysqlConnect = new AutoAppConnect();
     const connection = db === 'mongodb' ? await mongoClient.connect() : await mysqlConnect.createPool();
     try {
       const stagestmp = await stages.getStages(connection);
@@ -91,8 +91,8 @@ export function getDefaults(stages: StageEndpointsInterface, db: DbSelection) {
 
 export function addVehicleDescriptors(vehicles: VehicleEndpointsInterface, vehicleDescriptors: VehicleDescriptors, db: DbSelection) {
   return async () => {
-    const mongoClient = new AutoFlowClient();
-    const mysqlConnect = new AutoFlowConnect();
+    const mongoClient = new AutoAppClient();
+    const mysqlConnect = new AutoAppConnect();
     const connection = db === 'mongodb' ? await mongoClient.connect() : await mysqlConnect.createPool();
     try {
       for (let make of vehicleDescriptors) {
@@ -115,8 +115,8 @@ export function addVehicleDescriptors(vehicles: VehicleEndpointsInterface, vehic
 
 export function addStages(stageEndpoints: StageEndpointsInterface, stages: Stages, peoplePlaces: PeoplePlaces, db: DbSelection) {
   return async () => {
-    const mongoClient = new AutoFlowClient();
-    const mysqlConnect = new AutoFlowConnect();
+    const mongoClient = new AutoAppClient();
+    const mysqlConnect = new AutoAppConnect();
     const connection = db === 'mongodb' ? await mongoClient.connect() : await mysqlConnect.createPool();
     try {
       type Stagestmp = { stage: string, id: string; }[];
@@ -148,8 +148,8 @@ export function addStages(stageEndpoints: StageEndpointsInterface, stages: Stage
 
 export function generateVehicles(vehicles: VehicleEndpointsInterface, stages: StageEndpointsInterface, db: DbSelection) {
   return async (vehiclesAmountParam: number, monthsBackParam: number) => {
-    const mongoClient = new AutoFlowClient();
-    const mysqlConnect = new AutoFlowConnect();
+    const mongoClient = new AutoAppClient();
+    const mysqlConnect = new AutoAppConnect();
     const connection = db === 'mongodb' ? await mongoClient.connect() : await mysqlConnect.createPool();
     try {
       const vehicleAmount = vehiclesAmountParam;

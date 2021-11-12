@@ -2,12 +2,12 @@ import { StageSummary, StageVehicleCount, UpdatedStageOrder } from '../../common
 import { ResultSetHeader } from 'mysql2';
 import { GetSuccess, PatchManyResult, PostExists, PostSuccess } from '../../common/types/Results';
 import { MysqlStageSummary } from '../mysqlTypes/MysqlStage';
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { json, convertMysqlExportStage, convertMysqlStageSummary } from '../MysqlUtilities';
 import { Pool } from 'mysql2/promise';
 
 export async function createStagesTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS stages (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,7 +22,7 @@ export async function createStagesTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS  
 export async function getStageVehicleCountsMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const stagesTmp = (await getStagesMysql(pool)).data;
     const stageCounts: StageVehicleCount[] = [];
@@ -38,7 +38,7 @@ export async function getStageVehicleCountsMysql(poolParam?: Pool) {
 }
 
 export async function getStagesMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const searchQuery = `SELECT * FROM stages ORDER BY orderPosition`;
     const stages: MysqlStageSummary[] = (json(await pool.execute(searchQuery)))[0];
@@ -61,7 +61,7 @@ export async function getPeoplePlacesMysql(stageId: string, poolParam?: Pool) {
 }
 
 export async function addStageMysql(stageName: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // check if stage exists already
     const existsQuery = `SELECT name FROM stages WHERE name = ?`;
@@ -84,7 +84,7 @@ export async function addStageMysql(stageName: string, poolParam?: Pool) {
 }
 
 export async function updateStageOrderMysql(updateStagesArray: UpdatedStageOrder[], poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const stageUpdates = updateStagesArray.map(stage => {
       const updateQuery = `UPDATE stages SET orderPosition = ? WHERE id = ?`;
@@ -101,7 +101,7 @@ export async function updateStageOrderMysql(updateStagesArray: UpdatedStageOrder
 
 // HELPERS
 export async function getExportStageMysql(stageId: number, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const stageInfoQuery = `SELECT * FROM stages WHERE id = ?`;
     const stageInfo = json(await pool.execute(stageInfoQuery, [stageId]))[0][0];

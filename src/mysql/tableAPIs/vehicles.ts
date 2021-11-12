@@ -1,4 +1,4 @@
-import AutoFlowConnect from '../AutoFlowConnect';
+import AutoAppConnect from '../AutoAppConnect';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { convertMysqlDetailedVehicle, convertMysqlVehicle, json } from '../MysqlUtilities';
 import { PostExists, GetSuccess, PostSuccess, PatchSuccess, DeleteSuccess } from '../../common/types/Results';
@@ -11,7 +11,7 @@ import { ListOrder, Page } from 'common/types/misc';
 import { getStagesMysql } from './stages';
 
 export async function createVehiclesTable(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const query = `CREATE TABLE IF NOT EXISTS vehicles (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -43,7 +43,7 @@ export async function createVehiclesTable(poolParam?: Pool) {
 
 // INTERFACE EXPORTS
 export async function getVehiclesPagedMysql(status: VehicleStatus, sort: ListOrder, perPage: number, page: Page, compare: number, query: GetVehiclesQuery, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // MAIN STATUS QUERY
     // our  queyr arrays start with the top level match query for status
@@ -175,7 +175,7 @@ export async function getVehiclesPagedMysql(status: VehicleStatus, sort: ListOrd
 
 // FIXME need to convert vehicle from MysqlVehicle to Vehicle 
 export async function getVehiclesByStatusMysql(statusParams: string[], poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // define explicitly to protect from SQL injection attacks
     const active = statusParams.includes('active') ? 'active' : '';
@@ -191,7 +191,7 @@ export async function getVehiclesByStatusMysql(statusParams: string[], poolParam
 }
 
 export async function getNextStockMysql(poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const nextStockQuery = `SELECT MAX(stock) AS stock FROM vehicles`;
     const nextStockTmp = json(await pool.execute(nextStockQuery))[0][0].stock;
@@ -203,7 +203,7 @@ export async function getNextStockMysql(poolParam?: Pool) {
 }
 
 export async function checkStockMysql(stock: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     if (parseInt(stock) === 0) return new GetSuccess({ exists: false });
     let checkStock: CheckStock = { exists: false };
@@ -217,7 +217,7 @@ export async function checkStockMysql(stock: string, poolParam?: Pool) {
 }
 
 export async function addVehicleMysql(vehicleParam: AddVehicleParam, initialStageParam: InitialStageParam, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const { stock, year, make, model, trim, notes, dateAdded } = vehicleParam;
     // check if stock # is already in use
@@ -259,7 +259,7 @@ export async function addVehicleMysql(vehicleParam: AddVehicleParam, initialStag
 }
 
 export async function findVehicleMysql(field: 'id' | 'stock', value: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     // to protect from SQL injection attack, we explicitly assign this whereValue, not from paramater
     const whereValue = field === 'id' ? 'id' : field === 'stock' ? 'stock' : '';
@@ -288,7 +288,7 @@ export async function findVehicleMysql(field: 'id' | 'stock', value: string, poo
 }
 
 export async function updateVehicleMysql(vehicleId: string, update: VehicleUpdate, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     let updateDoc = { ...update };
     // check if any updates have to do with date or times, if so we must update any other fields that are based off them
@@ -375,7 +375,7 @@ export async function updateVehicleMysql(vehicleId: string, update: VehicleUpdat
 }
 
 export async function sellVehicleMysql(vehicleId: string, stageAssignmentId: string, dateSold: number, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     await completeStageAssignmentMysql(stageAssignmentId, dateSold, pool);
     // updateVehicleDoc handles calculating forSaleTime, totalSellTime, and reconditionTime
@@ -388,7 +388,7 @@ export async function sellVehicleMysql(vehicleId: string, stageAssignmentId: str
 }
 
 export async function deleteVehicleMyql(vehicleId: string, poolParam?: Pool) {
-  const pool = poolParam ? poolParam : await new AutoFlowConnect().createPool();
+  const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
     const deleteQuery = `DELETE FROM vehicles WHERE id = ?`;
     await pool.execute(deleteQuery, [vehicleId]);

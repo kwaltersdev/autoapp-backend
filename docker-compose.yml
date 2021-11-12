@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  autoflow-back-end:
+  autoapp-back-end:
     depends_on:
       - mysql
       - mongo
@@ -11,7 +11,7 @@ services:
     volumes:
       - ./src:/home/node/app/src
       - ./nodemon.json:/home/node/app/nodemon.json
-    container_name: autoflow-dev
+    container_name: autoapp-dev
     expose:
       - '7000'
       - '7001'
@@ -22,12 +22,12 @@ services:
     environment:
       - SELECT_PORT=7001
       - MAIN_PORT=7000
-      - MONGO_URI=mongodb://mongo:27017/AutoFlow
-      - MONGO_DATABASE=AutoFlow
+      - MONGO_URI=mongodb://mongo:27017/AutoApp
+      - MONGO_DATABASE=AutoApp
       - MYSQL_HOST=mysql
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
-      - MYSQL_DATABASE=AutoFlow
+      - MYSQL_DATABASE=AutoApp
     command: npm run dev
   mongo:
     container_name: mongo
@@ -45,7 +45,7 @@ services:
     cap_add: [ SYS_NICE ]
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=AutoFlow
+      - MYSQL_DATABASE=AutoApp
     ports:
       - '3306:3306'
     volumes:

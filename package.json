@@ -1,7 +1,7 @@
 {
-  "name": "autoflow-back-end-demo",
+  "name": "autoapp-back-end-demo",
   "version": "1.0.0",
-  "description": "Service for AutoFlow inventory management app",
+  "description": "Service for AutoApp inventory management app",
   "main": "index.ts",
   "scripts": {
     "start": "NODE_PATH=./build node build/index.js",

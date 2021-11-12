@@ -1,4 +1,4 @@
-import AutoFlowClient, { AutoFlowConnection } from '../AutoFlowClient';
+import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { ObjectId } from 'mongodb';
 import { handleIdParam, convertMongoModel, convertMongoModelDoc } from '../mongoUtilities';
 import { MongoIdName } from '../mongoTypes/mongoMisc';
@@ -7,8 +7,8 @@ import { MongoBaseModelDoc, MongoModelDoc } from '../mongoTypes/MongoVehicle';
 import { GetSuccess, PatchSuccess, PostExists, PostSuccess } from '../../common/types/Results';
 
 // INTERFACE EXPORTS
-export async function getModelsMongo(makeId: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getModelsMongo(makeId: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { models } = connection;
@@ -22,8 +22,8 @@ export async function getModelsMongo(makeId: string, connectionParam?: AutoFlowC
   }
 };
 
-export async function addModelMongo(makeId: string, modelName: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addModelMongo(makeId: string, modelName: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { models } = connection;
@@ -53,8 +53,8 @@ export async function addModelMongo(makeId: string, modelName: string, connectio
   }
 };
 
-export async function getTrimsMongo(modelId: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function getTrimsMongo(modelId: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { models } = connection;
@@ -67,8 +67,8 @@ export async function getTrimsMongo(modelId: string, connectionParam?: AutoFlowC
   }
 };
 
-export async function addTrimMongo(modelId: string | ObjectId, trimName: string, connectionParam?: AutoFlowConnection) {
-  const client = new AutoFlowClient();
+export async function addTrimMongo(modelId: string | ObjectId, trimName: string, connectionParam?: AutoAppConnection) {
+  const client = new AutoAppClient();
   try {
     const connection = connectionParam ? connectionParam : await client.connect();
     const { models } = connection;
