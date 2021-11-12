@@ -1,5 +1,5 @@
 # AutoApp Back End Demo
-Written in TypeScript/Node/Express, this back end application is meant for use with [autoapp-front-end-demo](https://github.com/kwaltersdev/autoapp-front-end-demo).
+Written in TypeScript/Node/Express, this back end application is meant for use with [autoapp-frontend](https://github.com/kwaltersdev/autoapp-front-end-demo).
 
 The higher level structure of this application is built on the Object Oriented paradigm. Through an express endpoint, consumers can switch which database (MongoDB or MySQL) the server is communicating with. Aside from the service broadcasting which database it is currently working with, the consumer would have no idea which database it is utlimately talking to (and it shouldn't). All endpoints remain the exact same on the exact same port, and all requests and responses are of the exact same types. Polymorphism makes this possible.
 
