@@ -11,7 +11,7 @@ services:
     volumes:
       - ./src:/home/node/app/src
       - ./nodemon.json:/home/node/app/nodemon.json
-    container_name: autoflow-service
+    container_name: autoflow-dev
     expose:
       - '7000'
       - '7001'

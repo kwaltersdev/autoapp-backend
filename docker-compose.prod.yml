@@ -3,4 +3,5 @@ services:
   autoflow-back-end:
     build:
       target: production
+    container_name: autoflow-production
     command: node build/index.js

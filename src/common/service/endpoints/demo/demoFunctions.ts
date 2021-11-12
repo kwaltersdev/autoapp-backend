@@ -77,7 +77,6 @@ export function getDefaults(stages: StageEndpointsInterface, db: DbSelection) {
             },
           },
         };
-
         return new GetSuccess(defaults);
       }
 

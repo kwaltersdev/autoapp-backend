@@ -1,5 +1,5 @@
 {
-  "name": "autoflow-service-oop",
+  "name": "autoflow-back-end-demo",
   "version": "1.0.0",
   "description": "Service for AutoFlow inventory management app",
   "main": "index.ts",

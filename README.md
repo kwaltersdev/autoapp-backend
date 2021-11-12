@@ -59,6 +59,11 @@ docker-compose up -d
 
 ### Stop the server:
 ```bash
+(press Ctrl+C)
+docker-compose down
+```
+If running in detatched mode, simply:
+```bash
 docker-compose down
 ```
 

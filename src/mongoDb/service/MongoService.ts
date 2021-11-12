@@ -9,4 +9,8 @@ export class MongoService extends ServiceAbstract {
   vehicleEndpoints = new MongoVehicleEndpoints();
   statisticsEndpoints = new StatisticsEndpoints(this.vehicleEndpoints, this.stageEndpoints);
   demoEndpoints = new MongoDemoEndpoints(this.vehicleEndpoints, this.stageEndpoints);
+
+  async initialize(): Promise<void> {
+    await this.demoEndpoints.setDefaults();
+  }
 }

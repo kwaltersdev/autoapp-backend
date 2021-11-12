@@ -32,6 +32,7 @@ export class MysqlService extends ServiceAbstract {
         createTrimsTable(pool),
         createVehiclesTable(pool),
         createStageAssignmentsTable(pool),
+        this.demoEndpoints.setDefaults()
       ]);
     } finally {
       pool.end();

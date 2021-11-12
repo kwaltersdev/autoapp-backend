@@ -57,6 +57,7 @@ async function selectService(dbSelection: DbSelection) {
         if (MONGO_URI) {
           server && await server.close();
           service = new MongoService();
+          await service.initialize();
           server = new MainServer('MongoDB', service);
           await server.listen();
           currentSelection = dbSelection;
