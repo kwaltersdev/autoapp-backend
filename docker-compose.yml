@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  autoapp-back-end:
+  autoapp-backend:
     depends_on:
       - mysql
       - mongo
