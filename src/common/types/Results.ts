@@ -1,4 +1,4 @@
-type ResultStatus = 'success' | 'exists' | 'failed';
+type ResultStatus = 'success' | 'exists' | 'failed' | 'empty';
 
 export abstract class Result {
   status: ResultStatus;

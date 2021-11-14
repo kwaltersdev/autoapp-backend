@@ -7,6 +7,7 @@ import { mongoCheckAssignStageParam } from '../mongoTypes/mongoTypeChecks';
 import { handleIdParam, convertMongoStageAssignment } from '../mongoUtilities';
 import { updateVehicleDocMongo, findVehicleMongo } from './vehicles';
 import { addStagePersonPlaceMongo } from './stages';
+import { DetailedVehicle } from 'common/types/Vehicle';
 
 // INTERFACE EXPORTS
 export async function assignStageMongo(assignStageParam: AssignStageParam | MongoAssignStageParam, previousStage?: CurrentStageSummary, initialAssignment = false, dateAddedParam?: number, connectionParam?: AutoAppConnection) {
@@ -19,7 +20,7 @@ export async function assignStageMongo(assignStageParam: AssignStageParam | Mong
       throw new Error(`missing 'dateAddedParam'`);
     };
   } else {
-    const vehicle = await findVehicleMongo('id', vehicleId, connectionParam);
+    const vehicle = await findVehicleMongo('id', vehicleId, connectionParam) as GetSuccess<DetailedVehicle>;
     dateAdded = vehicle.data.dateAdded;
   };
   // we determine if we need a dateForSale and reconditionTime values
@@ -68,7 +69,9 @@ export async function completeStageAssignmentMongo(stageAssignmentId: string, da
   const updateDoc = { status: 'complete', dateCompleted, completeTime };
   const updatedStageAssignment = await updateStageAssignmentMongo(stageAssignmentId, updateDoc, connectionParam);
   let updatedVehicle;
-  if (stageAssignment.data.stage.name !== 'Assign') updatedVehicle = await findVehicleMongo('id', updatedStageAssignment.doc.vehicleId, connectionParam);
+  if (stageAssignment.data.stage.name !== 'Assign') {
+    updatedVehicle = await findVehicleMongo('id', updatedStageAssignment.doc.vehicleId, connectionParam) as GetSuccess<DetailedVehicle>;
+  }
   return new PatchSuccess(stageAssignmentId, updateDoc, updatedStageAssignment.doc, updatedVehicle?.data);
 };
 

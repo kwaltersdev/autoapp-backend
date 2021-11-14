@@ -7,7 +7,6 @@ export function statisticsRoutes(statisticsEndpoints: StatisticsEndpointsInterfa
   const router = express.Router();
 
   // GET items
-
   // Get vehicle turn statistics
   router.get('/vehicle-turn-statistics', async (req: Request, res: Response) => {
     try {

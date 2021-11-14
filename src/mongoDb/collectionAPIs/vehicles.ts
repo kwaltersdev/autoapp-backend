@@ -1,14 +1,13 @@
 import AutoAppClient, { AutoAppConnection } from '../AutoAppClient';
 import { ObjectId } from 'mongodb';
-import { BaseVehicle, GetVehiclesQuery, AddVehicleParam, NextStock, CheckStock, VehicleStatus, VehiclePage } from '../../common/types/Vehicle';
+import { BaseVehicle, GetVehiclesQuery, AddVehicleParam, NextStock, CheckStock, VehicleStatus, VehiclePage, DetailedVehicle } from '../../common/types/Vehicle';
 import { InitialStageParam } from '../../common/types/StageAssignment';
 import { MongoVehicle, MongoVehicleUpdate } from '../mongoTypes/MongoVehicle';
 import { MongoAssignStageParam } from '../mongoTypes/MongoStageAssignment';
 import { convertMongoVehicle, convertMongoDetailedVehicle, handleIdParam } from '../mongoUtilities';
 import { assignStageMongo, completeStageAssignmentMongo } from './stageAssignments';
-import { GetSuccess, PostSuccess, PostExists, PatchSuccess, DeleteSuccess } from '../../common/types/Results';
-import { IdName, ListOrder, Page } from '../../common/types/misc';
-import { MongoIdName } from 'mongoDb/mongoTypes/mongoMisc';
+import { GetSuccess, PostSuccess, PostExists, PatchSuccess, DeleteSuccess, FailedResult } from '../../common/types/Results';
+import { ListOrder, Page } from '../../common/types/misc';
 import { getStagesMongo } from './stages';
 
 // INTERFACE EXPORTS
@@ -197,6 +196,7 @@ export async function findVehicleMongo(field: 'id' | 'stock', value: string | Ob
     };
     const args = [match, lookup, unwind, project];
     const mongoVehicle = (await vehicles.aggregate(args).toArray())[0];
+    if (!mongoVehicle) return new GetSuccess(null);
     const vehicle = convertMongoDetailedVehicle(mongoVehicle);
     return new GetSuccess(vehicle);
   } finally {
@@ -229,7 +229,7 @@ export async function updateVehicleDocMongo(vehicleId: ObjectId | string, update
     };
     const result = await vehicles.updateOne({ _id: vehicleIdtmp }, { $set: updateDoc });
     if (result.result.ok !== 1) throw new Error('Failed to update vehicle document');
-    const updatedVehicle = await findVehicleMongo('id', vehicleId, connection);
+    const updatedVehicle = await findVehicleMongo('id', vehicleId, connection) as GetSuccess<DetailedVehicle>;
     return new PatchSuccess(vehicleIdtmp.toHexString(), update, updatedVehicle.data);
   } finally {
     !connectionParam && await client.close();

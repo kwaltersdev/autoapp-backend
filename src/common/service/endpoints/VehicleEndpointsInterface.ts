@@ -9,7 +9,7 @@ export interface VehicleEndpointsInterface {
   getNextStock(connection?: unknown): Promise<GetSuccess<NextStock>>;
   checkStock(stock: string, connection?: unknown): Promise<GetSuccess<CheckStock>>;
   addVehicle(vehicleParam: AddVehicleParam, initialStageParam: InitialStageParam, connection?: unknown): Promise<PostSuccess<DetailedVehicle> | PostExists>;
-  findVehicle(field: 'id' | 'stock', value: string, connection?: unknown): Promise<GetSuccess<DetailedVehicle>>;
+  findVehicle(field: 'id' | 'stock', value: string, connection?: unknown): Promise<GetSuccess<DetailedVehicle | null>>;
   updateVehicle(vehicleId: string, update: object, connection?: unknown): Promise<PatchSuccess<object, DetailedVehicle>>;
   sellVehicle(vehicleId: string, stageAssignmentId: string, dateSold: number, connection?: unknown): Promise<PatchSuccess<object, DetailedVehicle>>;
   deleteVehicle(vehicleId: string, connection?: unknown): Promise<DeleteSuccess>;

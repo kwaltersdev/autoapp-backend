@@ -1,12 +1,11 @@
 import AutoAppConnect from '../AutoAppConnect';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { convertMysqlStageAssignment, json } from '../MysqlUtilities';
-import { PostExists, GetSuccess, PostSuccess, Result, PatchSuccess } from '../../common/types/Results';
-import { AddVehicleParam } from '../../common/types/Vehicle';
-import { AssignStageParam, CurrentStageSummary, InitialStageParam } from '../../common/types/StageAssignment';
+import { GetSuccess, PostSuccess, PatchSuccess } from '../../common/types/Results';
+import { DetailedVehicle } from '../../common/types/Vehicle';
+import { AssignStageParam, CurrentStageSummary } from '../../common/types/StageAssignment';
 import { findVehicleMysql } from './vehicles';
 import { addStagePersonPlaceMysql } from './stages-peoplePlaces-join';
-import { findStageAssignmentMongo } from 'mongoDb/collectionAPIs/stageAssignments';
 import { MysqlStageAssignment } from 'mysql/mysqlTypes/MysqlStageAssignment';
 
 export async function createStageAssignmentsTable(poolParam?: Pool) {
@@ -40,7 +39,7 @@ export async function assignStageMysql(assignStageParam: AssignStageParam, previ
     if (initialAssignment) {
       if (dateAddedParam) { dateAdded = dateAddedParam; } else throw new Error(`missing 'dateAddedParam'`);
     } else {
-      const vehicle = await findVehicleMysql('id', vehicleId, pool);
+      const vehicle = await findVehicleMysql('id', vehicleId, pool) as GetSuccess<DetailedVehicle>;
       dateAdded = vehicle.data.dateAdded;
     }
     // we determine if we need a dateForSale and reconditionTime values
@@ -56,7 +55,6 @@ export async function assignStageMysql(assignStageParam: AssignStageParam, previ
         reconditionTime = dateAssigned - dateAdded;
       };
     };
-    // FIX ME need to complete stage if teh previous stage was 'assign'
     if (previousStage?.stage.name === 'Assign') {
       await completeStageAssignmentMysql(previousStage.id, Date.now(), pool);
     }
@@ -69,7 +67,7 @@ export async function assignStageMysql(assignStageParam: AssignStageParam, previ
         dateAdded = ?, dateForSale = ?, reconditionTime = ?
       WHERE id = ?`;
     await pool.execute(updateVehicleQuery, [stageAssignmentId, stage.id, personPlace.id, dateAdded, dateForSaleTmp, reconditionTime, vehicleId]);
-    const vehicle = await findVehicleMysql('id', vehicleId, pool);
+    const vehicle = await findVehicleMysql('id', vehicleId, pool) as GetSuccess<DetailedVehicle>;
     // checks if the personPlace has ever been assigned to this stage, if not it adds it to the stages-peoplePlaces-join table
     await addStagePersonPlaceMysql(stage.id, personPlace.id, pool);
     return new PostSuccess(stageAssignmentId.toString(), vehicle.data);
@@ -90,9 +88,6 @@ export async function findStageAssignmentMysql(stageAssignmentId: string, poolPa
   }
 }
 
-// FIXME do we really need this?
-export async function updateStageAssignmentMysql(stageAssignmentId: String, poolParam?: Pool) { }
-
 export async function completeStageAssignmentMysql(stageAssignmentId: string, dateCompleted: number, poolParam?: Pool) {
   const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
@@ -103,7 +98,9 @@ export async function completeStageAssignmentMysql(stageAssignmentId: string, da
     const updatedStageAssignment = await findStageAssignmentMysql(stageAssignmentId, pool);
     const updateDoc = { status: 'complete', dateCompleted, completeTime };
     let updatedVehicle;
-    if (stageAssignment.data.stage.name !== 'Assign') updatedVehicle = await findVehicleMysql('id', updatedStageAssignment.data.vehicleId, pool);
+    if (stageAssignment.data.stage.name !== 'Assign') {
+      updatedVehicle = await findVehicleMysql('id', updatedStageAssignment.data.vehicleId, pool) as GetSuccess<DetailedVehicle>;
+    }
     return new PatchSuccess(stageAssignmentId, updateDoc, updatedStageAssignment.data, updatedVehicle?.data);
   } finally {
     !poolParam && pool.end();

@@ -2,13 +2,11 @@ import AutoAppConnect from '../AutoAppConnect';
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { convertMysqlDetailedVehicle, convertMysqlVehicle, json } from '../MysqlUtilities';
 import { PostExists, GetSuccess, PostSuccess, PatchSuccess, DeleteSuccess } from '../../common/types/Results';
-import { GetVehiclesQuery, AddVehicleParam, CheckStock, NextStock, VehicleStatus, VehicleUpdate, VehiclePage } from '../../common/types/Vehicle';
+import { DetailedVehicle, GetVehiclesQuery, AddVehicleParam, CheckStock, NextStock, VehicleStatus, VehicleUpdate, VehiclePage } from '../../common/types/Vehicle';
 import { InitialStageParam } from '../../common/types/StageAssignment';
 import { assignStageMysql, completeStageAssignmentMysql } from './stageAsignments';
-import { vehicleDescriptors } from 'common/service/endpoints/demo/demoData/demoVehicleDescriptors';
 import { MysqlDetailedVehicle, MysqlVehicle } from 'mysql/mysqlTypes/MysqVehicle';
 import { ListOrder, Page } from 'common/types/misc';
-import { getStagesMysql } from './stages';
 
 export async function createVehiclesTable(poolParam?: Pool) {
   const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
@@ -173,7 +171,6 @@ export async function getVehiclesPagedMysql(status: VehicleStatus, sort: ListOrd
   }
 }
 
-// FIXME need to convert vehicle from MysqlVehicle to Vehicle 
 export async function getVehiclesByStatusMysql(statusParams: string[], poolParam?: Pool) {
   const pool = poolParam ? poolParam : await new AutoAppConnect().createPool();
   try {
@@ -280,7 +277,9 @@ export async function findVehicleMysql(field: 'id' | 'stock', value: string, poo
         INNER JOIN stageAssignments as sa ON sa.id = v.currentStageAssignmentId
         WHERE v.${whereValue} = ?
         `;
-    const vehicle = convertMysqlDetailedVehicle(json(await pool.execute(vehicleQuery, [parseInt(value)]))[0][0]);
+    const mysqlVehicle = json(await pool.execute(vehicleQuery, [parseInt(value)]))[0][0];
+    if (!mysqlVehicle) return new GetSuccess(null);
+    const vehicle = convertMysqlDetailedVehicle(mysqlVehicle);
     return new GetSuccess(vehicle);
   } finally {
     !poolParam && await pool.end();
@@ -367,7 +366,7 @@ export async function updateVehicleMysql(vehicleId: string, update: VehicleUpdat
     const updateQueryString = updateQueryArray.join(', ');
     const queryString = `UPDATE vehicles SET ${updateQueryString} WHERE id = ?`;
     await pool.query(queryString, [...updateQueryValues, parseInt(vehicleId)]);
-    const updateVehicle = (await findVehicleMysql('id', vehicleId, pool)).data;
+    const updateVehicle = (await findVehicleMysql('id', vehicleId, pool) as GetSuccess<DetailedVehicle>).data;
     return new PatchSuccess(vehicleId, updateDoc, updateVehicle);
   } finally {
     !poolParam && await pool.end();
@@ -380,7 +379,7 @@ export async function sellVehicleMysql(vehicleId: string, stageAssignmentId: str
     await completeStageAssignmentMysql(stageAssignmentId, dateSold, pool);
     // updateVehicleDoc handles calculating forSaleTime, totalSellTime, and reconditionTime
     await updateVehicleMysql(vehicleId, { status: 'sold', dateSold }, poolParam);
-    const vehicle = (await findVehicleMysql('id', vehicleId, pool)).data;
+    const vehicle = (await findVehicleMysql('id', vehicleId, pool) as GetSuccess<DetailedVehicle>).data;
     return new PatchSuccess(vehicleId, { status: 'sold', dateSold }, vehicle);
   } finally {
     !poolParam && await pool.end();
